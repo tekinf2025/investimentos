@@ -1,1165 +1,1420 @@
+
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Investimentos - Tekinformática</title>
+    <title>Investimentos - Ricardo</title>
     <link rel="icon" href="https://i.imgur.com/9qzolpP.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            200: '#bae6fd',
-                            300: '#7dd3fc',
-                            400: '#38bdf8',
-                            500: '#0ea5e9',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                            800: '#075985',
-                            900: '#0c4a6e',
-                        },
-                        secondary: {
-                            50: '#f8fafc',
-                            100: '#f1f5f9',
-                            200: '#e2e8f0',
-                            300: '#cbd5e1',
-                            400: '#94a3b8',
-                            500: '#64748b',
-                            600: '#475569',
-                            700: '#334155',
-                            800: '#1e293b',
-                            900: '#0f172a',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
-            scroll-behavior: smooth;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
         }
-        
         .dashboard-card {
-            background-color: white;
-            border-radius: 16px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow: hidden;
-            border: 1px solid rgba(226, 232, 240, 0.8);
-        }
-        
-        .dashboard-card:hover {
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            transform: translateY(-4px);
-        }
-        
-        .btn {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 10px;
-            padding: 0.625rem 1.25rem;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-        }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        
-        .btn:active {
-            transform: translateY(0);
-        }
-        
-        .btn-primary {
-            background-color: #0ea5e9;
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background-color: #0284c7;
-        }
-        
-        .btn-secondary {
-            background-color: #64748b;
-            color: white;
-        }
-        
-        .btn-secondary:hover {
-            background-color: #475569;
-        }
-        
-        .btn-success {
-            background-color: #10b981;
-            color: white;
-        }
-        
-        .btn-success:hover {
-            background-color: #059669;
-        }
-        
-        .btn-danger {
-            background-color: #ef4444;
-            color: white;
-        }
-        
-        .btn-danger:hover {
-            background-color: #dc2626;
-        }
-        
-        .btn-warning {
-            background-color: #f59e0b;
-            color: white;
-        }
-        
-        .btn-warning:hover {
-            background-color: #d97706;
-        }
-        
-        .header-gradient {
-            background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 50%, #6366f1 100%);
-        }
-        
-        input, select {
-            border-radius: 10px;
-            border: 1px solid #e2e8f0;
-            padding: 0.625rem 1rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             transition: all 0.3s ease;
         }
-        
-        input:focus, select:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        .dashboard-card:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
         }
-        
+        .btn-primary {
+            background: linear-gradient(135deg, #4f46e5, #6366f1);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #4338ca, #4f46e5);
+            transform: translateY(-1px);
+        }
+        .btn-secondary {
+            background: linear-gradient(135deg, #10b981, #059669);
+            transition: all 0.3s ease;
+        }
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+            transform: translateY(-1px);
+        }
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            transition: all 0.3s ease;
+        }
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            transform: translateY(-1px);
+        }
         .table-header {
-            background-color: #f1f5f9;
+            background: linear-gradient(135deg, #4f46e5, #6366f1);
+            color: white;
         }
-        
-        .animate-fade-in {
-            animation: fadeIn 0.5s ease-in-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .logo-text {
-            background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 50%, #6366f1 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        /* Hide file input visually but keep it accessible */
-        .file-input {
-            width: 0.1px;
-            height: 0.1px;
-            opacity: 0;
-            overflow: hidden;
-            position: absolute;
-            z-index: -1;
-        }
-        
-        .card-header {
-            background: linear-gradient(to right, #f1f5f9, #e2e8f0);
-            padding: 1rem;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        
-        .table-container {
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        
-        .table-row-hover:hover {
-            background-color: #f8fafc;
-        }
-        
-        .stat-card {
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .stat-card::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 100px;
-            height: 100%;
-            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 100%);
-            transform: skewX(-15deg) translateX(50px);
-            transition: transform 0.5s ease;
-        }
-        
-        .stat-card:hover::after {
-            transform: skewX(-15deg) translateX(150px);
-        }
-        
         .chart-container {
             position: relative;
-            transition: transform 0.3s ease;
+            height: 350px;
+            width: 100%;
         }
-        
-        .chart-container:hover {
-            transform: scale(1.02);
+        .footer {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
         }
-        
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
+        .analysis-card {
+            border-left: 4px solid;
+            transition: all 0.3s ease;
+        }
+        .analysis-card:hover {
+            transform: translateY(-3px);
+        }
+        .progress-bar {
             height: 8px;
+            border-radius: 4px;
+            background: #e5e7eb;
+            overflow: hidden;
         }
-        
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
+        .progress-value {
+            height: 100%;
+            border-radius: 4px;
+        }
+        .table-container {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .table-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        .table-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
             border-radius: 10px;
         }
-        
-        ::-webkit-scrollbar-thumb {
-            background: #94a3b8;
+        .table-container::-webkit-scrollbar-thumb {
+            background: #c5c5c5;
             border-radius: 10px;
         }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: #64748b;
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+        .gauge-container {
+            position: relative;
+            width: 120px;
+            height: 60px;
+            margin: 0 auto;
+        }
+        .gauge-bg {
+            position: absolute;
+            width: 120px;
+            height: 60px;
+            border-top-left-radius: 120px;
+            border-top-right-radius: 120px;
+            background: #e5e7eb;
+            overflow: hidden;
+        }
+        .gauge-fill {
+            position: absolute;
+            bottom: 0;
+            width: 120px;
+            border-top-left-radius: 120px;
+            border-top-right-radius: 120px;
+            transform-origin: center bottom;
+        }
+        .gauge-center {
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 5px rgba(0,0,0,0.2);
+        }
+        .gauge-needle {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform-origin: center bottom;
+            width: 4px;
+            height: 55px;
+            background: #1e293b;
+            border-radius: 2px;
+            transform: translateX(-50%) rotate(0deg);
+            transition: transform 1s ease-out;
+        }
+        .app-button {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .app-button:hover {
+            background: linear-gradient(135deg, #ea580c, #c2410c);
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .toast-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+        .toast-error {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+        .toast-info {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
         }
     </style>
 </head>
-<body class="min-h-screen">
-    <!-- Header with modern gradient -->
-    <header class="header-gradient text-white p-6 shadow-lg sticky top-0 z-50">
-        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
-            <div class="flex items-center space-x-3 mb-4 md:mb-0">
-                <div class="bg-white p-2 rounded-xl shadow-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-primary-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-                        <line x1="8" y1="21" x2="16" y2="21"></line>
-                        <line x1="12" y1="17" x2="12" y2="21"></line>
-                    </svg>
-                </div>
-                <div>
-                    <h1 class="text-3xl font-bold tracking-tight">Tekinformática</h1>
-                    <p class="text-sm opacity-90 font-light">Dashboard Financeiro Pro</p>
-                </div>
-            </div>
-            <div class="flex flex-wrap gap-3">
-                <button id="importCSVBtn" class="btn btn-secondary group">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 transition-transform group-hover:-translate-y-1" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                    </svg>
-                    Importar CSV Remoto
-                </button>
-                
-                <label for="fileInput" class="btn btn-warning group cursor-pointer">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 transition-transform group-hover:-translate-y-1" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clip-rule="evenodd" />
-                    </svg>
-                    Importar Arquivo
-                </label>
-                <input type="file" id="fileInput" class="file-input" accept=".csv">
-                
-                <button id="exportBtn" class="btn btn-primary group">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 transition-transform group-hover:-translate-y-1" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM13.707 6.707a1 1 0 010-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 5.414V13a1 1 0 102 0V5.414l1.293 1.293a1 1 0 001.414 0z" clip-rule="evenodd" />
-                    </svg>
-                    Exportar
-                </button>
-            </div>
-        </div>
-    </header>
-
-    <!-- Main Content with modern spacing and layout -->
-    <main class="container mx-auto py-8 px-4 space-y-8">
-        <!-- Asset Name Input with modern card design -->
-        <div class="dashboard-card animate__animated animate__fadeIn">
-            <div class="card-header">
-                <div class="flex flex-col md:flex-row md:items-center justify-between">
-                    <h2 class="text-xl font-semibold text-gray-800 flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                        </svg>
-                        Análise de Investimentos Financeiro
-                    </h2>
-                    <div class="mt-4 md:mt-0">
-                        <a href="https://www.appsheet.com/start/6da24333-ecbc-49fc-af48-a7756a317871" target="_blank" class="btn btn-primary flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z" />
+<body>
+    <div class="min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-4 shadow-lg">
+            <div class="container mx-auto flex justify-between items-center">
+                <h1 class="text-2xl md:text-3xl font-bold">Dashboard de Investimentos</h1>
+                <div class="flex space-x-2">
+                    <div class="relative">
+                        <button id="importDropdownBtn" class="btn-primary px-3 py-2 rounded-lg text-white text-sm font-medium flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                             </svg>
-                            Meus Investimentos
-                        </a>
+                            Importar
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <div id="importDropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg hidden z-10">
+                            <div class="py-1">
+                                <button id="importLocalBtn" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Importar arquivo local
+                                </button>
+                                <button id="importRemoteBtn" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Importar arquivo remoto
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            
-            <!-- Data Table with modern styling -->
-            <div class="p-6">
-                <div class="table-container mb-6">
-                    <table class="min-w-full bg-white">
-                        <thead class="bg-gray-50 text-gray-600 uppercase text-xs font-medium tracking-wider">
-                            <tr>
-                                <th class="px-6 py-3 text-left">ATIVO</th>
-                                <th class="px-6 py-3 text-left">INVESTIDO (R$)</th>
-                                <th class="px-6 py-3 text-left">LUCRO (%)</th>
-                                <th class="px-6 py-3 text-left">TOTAL (R$)</th>
-                                <th class="px-6 py-3 text-right">FUNÇÃO</th>
-                            </tr>
-                        </thead>
-                        <tbody id="investmentTable" class="divide-y divide-gray-200">
-                            <!-- Table rows will be added dynamically -->
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div class="flex justify-end">
-                    <button id="addItemBtn" class="btn btn-success group">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 transition-transform group-hover:rotate-90" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                    <button id="exportBtn" class="btn-secondary px-3 py-2 rounded-lg text-white text-sm font-medium flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4-4m0 0L8 8m4-4v12" />
                         </svg>
-                        Adicionar Item
+                        Exportar CSV
                     </button>
                 </div>
             </div>
-        </div>
-        
-        <!-- Summary Cards with modern design -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="dashboard-card p-6 stat-card bg-gradient-to-br from-blue-50 to-blue-100 animate__animated animate__fadeIn">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-medium text-gray-700">Investido Total</h3>
-                    <div class="p-2 bg-blue-100 rounded-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-grow container mx-auto p-4 md:p-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Chart Section -->
+                <div class="dashboard-card p-6 lg:col-span-1">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Distribuição da Carteira</h2>
+                    <div class="chart-container">
+                        <canvas id="portfolioChart"></canvas>
                     </div>
+                    <div id="chartLegend" class="mt-4 grid grid-cols-2 gap-2 text-sm"></div>
                 </div>
-                <p id="totalCost" class="text-3xl font-bold text-gray-900 mb-2">R$ 0,00</p>
-                <p class="text-sm text-gray-500">Soma de todos os custos</p>
-                <div class="absolute bottom-0 right-0 h-16 w-16 bg-blue-200 rounded-tl-full opacity-30"></div>
-            </div>
-            
-            <div class="dashboard-card p-6 stat-card bg-gradient-to-br from-green-50 to-green-100 animate__animated animate__fadeIn animate__delay-1s">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-medium text-gray-700">Valor Total com Lucro</h3>
-                    <div class="p-2 bg-green-100 rounded-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                        </svg>
+
+                <!-- Summary Section -->
+                <div class="dashboard-card p-6 lg:col-span-2">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Resumo da Carteira</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg p-4 text-white">
+                            <h3 class="text-sm font-medium opacity-80">Valor Total</h3>
+                            <p id="totalValue" class="text-2xl font-bold">R$ 0,00</p>
+                        </div>
+                        <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-lg p-4 text-white">
+                            <h3 class="text-sm font-medium opacity-80">Lucro/Prejuízo</h3>
+                            <p id="profitLoss" class="text-2xl font-bold">R$ 0,00</p>
+                        </div>
+                        <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg p-4 text-white">
+                            <h3 class="text-sm font-medium opacity-80">Rentabilidade</h3>
+                            <p id="profitPercentage" class="text-2xl font-bold">0,00%</p>
+                        </div>
                     </div>
-                </div>
-                <p id="totalWithProfit" class="text-3xl font-bold text-green-600 mb-2">R$ 0,00</p>
-                <p class="text-sm text-gray-500">Soma de custos + lucro</p>
-                <div class="absolute bottom-0 right-0 h-16 w-16 bg-green-200 rounded-tl-full opacity-30"></div>
-            </div>
-            
-            <div class="dashboard-card p-6 stat-card bg-gradient-to-br from-purple-50 to-purple-100 animate__animated animate__fadeIn animate__delay-2s">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-medium text-gray-700">Lucro Total</h3>
-                    <div class="p-2 bg-purple-100 rounded-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                </div>
-                <p id="totalProfit" class="text-3xl font-bold text-purple-600 mb-2">R$ 0,00</p>
-                <p class="text-sm text-gray-500">Diferença entre valor total e custo</p>
-                <div class="absolute bottom-0 right-0 h-16 w-16 bg-purple-200 rounded-tl-full opacity-30"></div>
-            </div>
-        </div>
-        
-        <!-- Charts and Analysis with modern design -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="dashboard-card animate__animated animate__fadeIn">
-                <div class="card-header">
-                    <h3 class="text-lg font-medium text-gray-700 flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
-                        </svg>
-                        Distribuição de Valores Totais
-                    </h3>
-                </div>
-                <div class="p-6">
-                    <div class="h-64 chart-container">
-                        <canvas id="costChart"></canvas>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="dashboard-card animate__animated animate__fadeIn animate__delay-1s">
-                <div class="card-header">
-                    <h3 class="text-lg font-medium text-gray-700 flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                        </svg>
-                        Análise Financeira
-                    </h3>
-                </div>
-                <div class="p-6">
-                    <div id="financialAnalysis" class="text-gray-700 space-y-3">
-                        <div class="flex items-center p-4 bg-blue-50 rounded-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-gray-700">Ativos</h3>
+                        <button id="addAssetBtn" class="btn-primary px-3 py-2 rounded-lg text-white text-sm font-medium flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                             </svg>
-                            <p>Adicione itens para gerar uma análise financeira detalhada.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Installment Plans with modern design -->
-        <div class="dashboard-card animate__animated animate__fadeIn animate__delay-2s">
-            <div class="card-header">
-                <h3 class="text-lg font-medium text-gray-700 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
-                    Simulação de Ganhos Mensais
-                </h3>
-            </div>
-            <div class="p-6">
-                <div class="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="relative">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Valor Total:</label>
-                        <div class="relative">
-                            <input type="text" id="installmentAmount" class="border border-gray-300 rounded-lg pl-10 pr-4 py-2 w-full focus:ring-2 focus:ring-primary-500 focus:border-primary-500" placeholder="0,00">
-                            <span class="absolute left-3 top-2.5 text-gray-500">R$</span>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Taxa de Juros (%):</label>
-                        <div class="relative">
-                            <input type="number" id="interestRate" class="border border-gray-300 rounded-lg pl-4 pr-10 py-2 w-full focus:ring-2 focus:ring-primary-500 focus:border-primary-500" value="2.6" step="0.1">
-                            <span class="absolute right-3 top-2.5 text-gray-500">%</span>
-                        </div>
-                    </div>
-                    <div class="flex items-end">
-                        <button id="calculateInstallments" class="btn btn-primary w-full group">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 transition-transform group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                            </svg>
-                            Calcular Parcelas
+                            Adicionar Ativo
                         </button>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="min-w-full bg-white rounded-lg overflow-hidden">
+                            <thead class="table-header sticky top-0 z-10">
+                                <tr>
+                                    <th class="px-4 py-3 text-left">Código</th>
+                                    <th class="px-4 py-3 text-left">Empresa</th>
+                                    <th class="px-4 py-3 text-right">Qtd.</th>
+                                    <th class="px-4 py-3 text-right">Valor de Compra</th>
+                                    <th class="px-4 py-3 text-right">Preço Atual</th>
+                                    <th class="px-4 py-3 text-right">Derivativos</th>
+                                    <th class="px-4 py-3 text-right">Proventos</th>
+                                    <th class="px-4 py-3 text-right">Preço Médio</th>
+                                    <th class="px-4 py-3 text-right">Total</th>
+                                    <th class="px-4 py-3 text-right">Lucro/Prejuízo</th>
+                                    <th class="px-4 py-3 text-center">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="assetTableBody">
+                                <!-- Table rows will be added dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Portfolio Analysis Section -->
+            <div class="mt-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Análise da Carteira</h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                    <!-- Risk Assessment -->
+                    <div class="dashboard-card p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Avaliação de Risco</h3>
+                        <div class="gauge-container mb-4">
+                            <div class="gauge-bg"></div>
+                            <div id="riskGaugeFill" class="gauge-fill"></div>
+                            <div class="gauge-center"></div>
+                            <div id="riskGaugeNeedle" class="gauge-needle"></div>
+                        </div>
+                        <p id="riskLevel" class="text-center text-lg font-semibold mb-2">Moderado</p>
+                        <p class="text-sm text-gray-600 text-center">Baseado na volatilidade e diversificação dos ativos</p>
+                        
+                        <div class="mt-6">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-sm font-medium text-gray-700">Diversificação</span>
+                                <span id="diversificationScore" class="text-sm font-medium text-gray-700">70%</span>
+                            </div>
+                            <div class="progress-bar mb-4">
+                                <div id="diversificationBar" class="progress-value bg-blue-500" style="width: 70%"></div>
+                            </div>
+                            
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-sm font-medium text-gray-700">Volatilidade</span>
+                                <span id="volatilityScore" class="text-sm font-medium text-gray-700">45%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div id="volatilityBar" class="progress-value bg-purple-500" style="width: 45%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Performance Analysis -->
+                    <div class="dashboard-card p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Análise de Desempenho</h3>
+                        <div class="chart-container h-48">
+                            <canvas id="performanceChart"></canvas>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mt-4">
+                            <div>
+                                <p class="text-sm text-gray-600">Melhor Ativo</p>
+                                <p id="bestAsset" class="font-semibold text-green-600">PETR4 (+12.5%)</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Pior Ativo</p>
+                                <p id="worstAsset" class="font-semibold text-red-600">VALE3 (-5.2%)</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recommendations -->
+                    <div class="dashboard-card p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Recomendações</h3>
+                        <div id="recommendationsContainer" class="space-y-4">
+                            <div class="analysis-card border-blue-500 bg-blue-50 p-3 rounded">
+                                <h4 class="font-medium text-blue-700">Diversificação</h4>
+                                <p class="text-sm text-gray-700">Considere adicionar ativos de outros setores para melhorar a diversificação da carteira.</p>
+                            </div>
+                            <div class="analysis-card border-green-500 bg-green-50 p-3 rounded">
+                                <h4 class="font-medium text-green-700">Oportunidade</h4>
+                                <p class="text-sm text-gray-700">PETR4 está com bom desempenho. Considere aumentar sua posição.</p>
+                            </div>
+                            <div class="analysis-card border-amber-500 bg-amber-50 p-3 rounded">
+                                <h4 class="font-medium text-amber-700">Atenção</h4>
+                                <p class="text-sm text-gray-700">VALE3 está com desempenho abaixo do esperado. Monitore de perto.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="table-container">
-                    <table class="min-w-full bg-white">
-                        <thead class="bg-gray-50 text-gray-600 uppercase text-xs font-medium tracking-wider">
-                            <tr>
-                                <th class="px-6 py-3 text-left">Parcelas</th>
-                                <th class="px-6 py-3 text-left">Valor da Parcela (R$)</th>
-                                <th class="px-6 py-3 text-left">Juros Total (R$)</th>
-                                <th class="px-6 py-3 text-left">Valor Total (R$)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="installmentTable" class="divide-y divide-gray-200">
-                            <!-- Installment rows will be added dynamically -->
-                        </tbody>
-                    </table>
+                <!-- Sector Distribution -->
+                <div class="dashboard-card p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Distribuição por Setor</h3>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="chart-container h-64">
+                            <canvas id="sectorChart"></canvas>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-gray-700 mb-3">Análise Setorial</h4>
+                            <div class="space-y-4">
+                                <div id="sectorAnalysis" class="space-y-3">
+                                    <!-- Sector analysis will be added dynamically -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </main>
+        </main>
 
-    <!-- Footer with modern design -->
-    <footer class="bg-gray-900 text-white py-10">
-        <div class="container mx-auto px-4">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="flex items-center space-x-3 mb-6 md:mb-0">
-                    <div class="bg-white p-2 rounded-xl shadow-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-primary-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-                            <line x1="8" y1="21" x2="16" y2="21"></line>
-                            <line x1="12" y1="17" x2="12" y2="21"></line>
+        <!-- Footer -->
+        <footer class="footer text-white p-4 mt-8">
+            <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <img src="https://i.imgur.com/sHyKra6.png" alt="Tekinformática Logo" class="w-[30px] h-[30px] mr-2">
+                    <span>(21) 97628-6027 Ricardo Moraes</span>
+                </div>
+                <div class="mb-4 md:mb-0">
+                    <a href="https://www.appsheet.com/start/6da24333-ecbc-49fc-af48-a7756a317871" target="_blank" class="app-button px-6 py-3 rounded-lg text-white font-medium inline-flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                         </svg>
+                        Meus Investimentos
+                    </a>
+                </div>
+                <div>
+                    <p>© 2011 Tekinformática - Todos os direitos reservados</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modal for adding/editing assets -->
+    <div id="assetModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md">
+            <h2 id="modalTitle" class="text-xl font-semibold text-gray-800 mb-4">Adicionar Ativo</h2>
+            <form id="assetForm">
+                <input type="hidden" id="assetId">
+                <div class="grid grid-cols-1 gap-4">
+                    <div>
+                        <label for="codigo" class="block text-sm font-medium text-gray-700 mb-1">Código</label>
+                        <input type="text" id="codigo" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
                     </div>
                     <div>
-                        <h2 class="text-2xl font-bold">Tekinformática</h2>
-                        <p class="text-sm opacity-80">Dashboard Financeiro Pro</p>
+                        <label for="empresa" class="block text-sm font-medium text-gray-700 mb-1">Empresa</label>
+                        <input type="text" id="empresa" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                    </div>
+                    <div>
+                        <label for="setor" class="block text-sm font-medium text-gray-700 mb-1">Setor</label>
+                        <select id="setor" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="Petróleo e Gás">Petróleo e Gás</option>
+                            <option value="Mineração">Mineração</option>
+                            <option value="Financeiro">Financeiro</option>
+                            <option value="Varejo">Varejo</option>
+                            <option value="Tecnologia">Tecnologia</option>
+                            <option value="Energia">Energia</option>
+                            <option value="Saúde">Saúde</option>
+                            <option value="Renda Fixa">Renda Fixa</option>
+                            <option value="Telecomunicações">Telecomunicações</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="quantidade" class="block text-sm font-medium text-gray-700 mb-1">Quantidade</label>
+                        <input type="number" id="quantidade" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" min="1" required>
+                    </div>
+                    <div>
+                        <label for="valorCompra" class="block text-sm font-medium text-gray-700 mb-1">Valor de Compra (por unidade)</label>
+                        <input type="number" id="valorCompra" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" step="0.01" min="0.01" required>
+                    </div>
+                    <div>
+                        <label for="precoAtual" class="block text-sm font-medium text-gray-700 mb-1">Preço Atual (por unidade)</label>
+                        <input type="number" id="precoAtual" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" step="0.01" min="0.01" required>
+                    </div>
+                    <div>
+                        <label for="derivativos" class="block text-sm font-medium text-gray-700 mb-1">Derivativos (total)</label>
+                        <input type="number" id="derivativos" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" step="0.01" value="0">
+                    </div>
+                    <div>
+                        <label for="proventos" class="block text-sm font-medium text-gray-700 mb-1">Proventos (total)</label>
+                        <input type="number" id="proventos" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" step="0.01" value="0">
                     </div>
                 </div>
-                <div class="text-center md:text-right">
-                    <p class="text-sm opacity-80">© 2011 Tekinformática - Todos os direitos reservados</p>
-                    <div class="flex justify-center md:justify-end space-x-4 mt-3">
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                <path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd"></path>
-                            </svg>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path>
-                            </svg>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                <path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clip-rule="evenodd"></path>
-                            </svg>
-                        </a>
-                    </div>
+                <div class="flex justify-end space-x-3 mt-6">
+                    <button type="button" id="cancelBtn" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors">Cancelar</button>
+                    <button type="submit" class="btn-primary px-4 py-2 rounded-md text-white">Salvar</button>
                 </div>
-            </div>
+            </form>
         </div>
-    </footer>
+    </div>
 
-    <!-- Notification container -->
-    <div id="notificationContainer" class="fixed top-4 right-4 z-50 space-y-4"></div>
+    <!-- Modal for remote CSV URL -->
+    <div id="remoteUrlModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Importar CSV Remoto</h2>
+            <form id="remoteUrlForm">
+                <div class="mb-4">
+                    <label for="csvUrl" class="block text-sm font-medium text-gray-700 mb-1">URL do arquivo CSV</label>
+                    <input type="url" id="csvUrl" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                           value="https://tekinf2025.github.io/investimentos/investe2025.csv" required>
+                </div>
+                <div class="flex justify-end space-x-3 mt-6">
+                    <button type="button" id="cancelUrlBtn" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors">Cancelar</button>
+                    <button type="submit" class="btn-primary px-4 py-2 rounded-md text-white">Importar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div id="toast" class="toast">
+        <span id="toastMessage"></span>
+    </div>
+
+    <!-- Hidden file input for CSV import -->
+    <input type="file" id="csvFileInput" accept=".csv" class="hidden">
 
     <script>
-        // Global variables
-        let investments = [];
-        let chart = null;
-        
-        // Format number to Brazilian currency format
-        function formatCurrency(value) {
-            return new Intl.NumberFormat('pt-BR', {
-                style: 'currency',
-                currency: 'BRL',
-                minimumFractionDigits: 2
-            }).format(value);
-        }
-        
-        // Parse Brazilian currency format to number
-        function parseCurrency(value) {
-            if (typeof value === 'number') return value;
-            if (!value) return 0;
-            
-            // Remove currency symbol, dots and replace comma with dot
-            return parseFloat(value.replace(/[^\d,.-]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
-        }
-        
-        // Initialize the dashboard
         document.addEventListener('DOMContentLoaded', function() {
-            // Add event listeners
-            document.getElementById('addItemBtn').addEventListener('click', addNewItem);
-            document.getElementById('importCSVBtn').addEventListener('click', importCSVData);
-            document.getElementById('exportBtn').addEventListener('click', exportData);
-            document.getElementById('calculateInstallments').addEventListener('click', calculateInstallments);
-            document.getElementById('fileInput').addEventListener('change', handleFileUpload);
-            
-            // Format installment amount input as currency
-            const installmentAmountInput = document.getElementById('installmentAmount');
-            installmentAmountInput.addEventListener('blur', function() {
-                this.value = formatCurrency(parseCurrency(this.value));
-            });
-            
-            // Initialize with empty data
-            renderTable();
-            initializeChart();
-        });
-        
-        // Initialize empty chart
-        function initializeChart() {
-            const ctx = document.getElementById('costChart').getContext('2d');
-            
-            chart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        label: 'Distribuição de Valores Totais',
-                        data: [],
-                        backgroundColor: [
-                            'rgba(79, 70, 229, 0.8)',
-                            'rgba(16, 185, 129, 0.8)',
-                            'rgba(245, 158, 11, 0.8)',
-                            'rgba(239, 68, 68, 0.8)',
-                            'rgba(14, 165, 233, 0.8)',
-                            'rgba(168, 85, 247, 0.8)'
-                        ],
-                        borderColor: [
-                            'rgba(79, 70, 229, 1)',
-                            'rgba(16, 185, 129, 1)',
-                            'rgba(245, 158, 11, 1)',
-                            'rgba(239, 68, 68, 1)',
-                            'rgba(14, 165, 233, 1)',
-                            'rgba(168, 85, 247, 1)'
-                        ],
-                        borderWidth: 2,
-                        hoverOffset: 15,
-                        borderRadius: 5
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '65%',
-                    plugins: {
-                        legend: {
-                            position: 'right',
-                            labels: {
-                                padding: 20,
-                                font: {
-                                    family: 'Inter',
-                                    size: 12
-                                }
-                            }
-                        },
-                        tooltip: {
-                            backgroundColor: 'rgba(30, 41, 59, 0.8)',
-                            titleFont: {
-                                family: 'Inter',
-                                size: 14,
-                                weight: 'bold'
+            // Initialize variables
+            let assets = [];
+            let portfolioChart = null;
+            let performanceChart = null;
+            let sectorChart = null;
+            let editingIndex = -1;
+            const colors = [
+                '#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', 
+                '#ec4899', '#06b6d4', '#14b8a6', '#f97316', '#6366f1',
+                '#84cc16', '#64748b', '#d946ef', '#0ea5e9', '#22c55e'
+            ];
+
+            // Initialize charts
+            function initCharts() {
+                // Portfolio distribution chart
+                const portfolioCtx = document.getElementById('portfolioChart').getContext('2d');
+                portfolioChart = new Chart(portfolioCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            data: [],
+                            backgroundColor: colors,
+                            borderWidth: 1,
+                            borderColor: '#ffffff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
                             },
-                            bodyFont: {
-                                family: 'Inter',
-                                size: 13
-                            },
-                            padding: 12,
-                            cornerRadius: 8,
-                            callbacks: {
-                                label: function(context) {
-                                    const label = context.label || '';
-                                    const value = context.raw || 0;
-                                    const total = context.dataset.data.reduce((a, b) => a + b, 0) || 0;
-                                    const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
-                                    return `${label}: ${formatCurrency(value)} (${percentage}%)`;
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const label = context.label || '';
+                                        const value = context.parsed || 0;
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = Math.round((value / total) * 100);
+                                        return `${label}: R$ ${value.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})} (${percentage}%)`;
+                                    }
                                 }
                             }
                         }
-                    },
-                    animation: {
-                        animateScale: true,
-                        animateRotate: true
                     }
-                }
-            });
-        }
-        
-        // Handle file upload
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (!file) {
-                showNotification('Nenhum arquivo selecionado.', 'error');
-                return;
-            }
-            
-            // Show loading notification
-            showNotification('Carregando arquivo...', 'info');
-            
-            // Use FileReader to read the file content
-            const reader = new FileReader();
-            
-            reader.onload = function(e) {
-                try {
-                    const csvContent = e.target.result;
-                    
-                    // Use PapaParse to parse CSV
-                    Papa.parse(csvContent, {
-                        header: true,
-                        skipEmptyLines: true,
-                        complete: function(results) {
-                            if (results.data && results.data.length > 0) {
-                                processCSVData(results.data);
-                                showNotification('Arquivo importado com sucesso!', 'success');
-                            } else {
-                                showNotification('Arquivo vazio ou formato inválido.', 'error');
+                });
+                
+                // Performance chart (line chart)
+                const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+                performanceChart = new Chart(performanceCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+                        datasets: [{
+                            label: 'Desempenho da Carteira',
+                            data: [0, 2, -1, 3, 5, 4],
+                            borderColor: '#4f46e5',
+                            backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
                             }
                         },
-                        error: function(error) {
-                            console.error("Error parsing file:", error);
-                            showNotification('Erro ao processar o arquivo CSV.', 'error');
+                        scales: {
+                            y: {
+                                ticks: {
+                                    callback: function(value) {
+                                        return value + '%';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                // Sector distribution chart
+                const sectorCtx = document.getElementById('sectorChart').getContext('2d');
+                sectorChart = new Chart(sectorCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            data: [],
+                            backgroundColor: colors,
+                            borderWidth: 1,
+                            borderColor: '#ffffff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: {
+                                    boxWidth: 15,
+                                    padding: 15
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const label = context.label || '';
+                                        const value = context.parsed || 0;
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = Math.round((value / total) * 100);
+                                        return `${label}: ${percentage}%`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Update portfolio chart with current assets
+            function updatePortfolioChart() {
+                if (!portfolioChart) return;
+                
+                const labels = assets.map(asset => asset.codigo);
+                const data = assets.map(asset => parseFloat((asset.quantidade * asset.precoAtual).toFixed(2)));
+                
+                portfolioChart.data.labels = labels;
+                portfolioChart.data.datasets[0].data = data;
+                portfolioChart.update();
+                
+                // Update chart legend
+                updateChartLegend(labels, data);
+            }
+            
+            // Update sector chart
+            function updateSectorChart() {
+                if (!sectorChart) return;
+                
+                // Group assets by sector
+                const sectorData = {};
+                assets.forEach(asset => {
+                    const sector = asset.setor || 'Outros';
+                    const value = asset.quantidade * asset.precoAtual;
+                    
+                    if (sectorData[sector]) {
+                        sectorData[sector] += value;
+                    } else {
+                        sectorData[sector] = value;
+                    }
+                });
+                
+                const labels = Object.keys(sectorData);
+                const data = Object.values(sectorData);
+                
+                sectorChart.data.labels = labels;
+                sectorChart.data.datasets[0].data = data;
+                sectorChart.update();
+                
+                // Update sector analysis
+                updateSectorAnalysis(sectorData);
+            }
+            
+            // Update sector analysis
+            function updateSectorAnalysis(sectorData) {
+                const container = document.getElementById('sectorAnalysis');
+                container.innerHTML = '';
+                
+                const totalValue = Object.values(sectorData).reduce((a, b) => a + b, 0);
+                
+                // Sort sectors by value (descending)
+                const sortedSectors = Object.entries(sectorData)
+                    .sort((a, b) => b[1] - a[1])
+                    .map(([sector, value]) => {
+                        const percentage = ((value / totalValue) * 100).toFixed(1);
+                        return { sector, value, percentage };
+                    });
+                
+                sortedSectors.forEach((item, index) => {
+                    const sectorItem = document.createElement('div');
+                    sectorItem.className = 'flex items-center';
+                    
+                    const colorIndex = index % colors.length;
+                    
+                    sectorItem.innerHTML = `
+                        <div class="w-3 h-3 rounded-full mr-2" style="background-color: ${colors[colorIndex]}"></div>
+                        <div class="flex-grow">
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm font-medium">${item.sector}</span>
+                                <span class="text-sm font-medium">${item.percentage}%</span>
+                            </div>
+                            <div class="progress-bar mt-1">
+                                <div class="progress-value" style="width: ${item.percentage}%; background-color: ${colors[colorIndex]}"></div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    container.appendChild(sectorItem);
+                });
+                
+                // Add recommendation based on sector distribution
+                const dominantSector = sortedSectors[0];
+                if (dominantSector && parseFloat(dominantSector.percentage) > 40) {
+                    const recommendationsContainer = document.getElementById('recommendationsContainer');
+                    
+                    // Check if recommendation already exists
+                    const existingRec = Array.from(recommendationsContainer.children).find(
+                        el => el.querySelector('h4').textContent === 'Concentração Setorial'
+                    );
+                    
+                    if (!existingRec) {
+                        const recommendation = document.createElement('div');
+                        recommendation.className = 'analysis-card border-yellow-500 bg-yellow-50 p-3 rounded';
+                        recommendation.innerHTML = `
+                            <h4 class="font-medium text-yellow-700">Concentração Setorial</h4>
+                            <p class="text-sm text-gray-700">Sua carteira está muito concentrada no setor de ${dominantSector.sector} (${dominantSector.percentage}%). Considere diversificar em outros setores.</p>
+                        `;
+                        recommendationsContainer.appendChild(recommendation);
+                    }
+                }
+            }
+            
+            // Update custom chart legend
+            function updateChartLegend(labels, data) {
+                const legendContainer = document.getElementById('chartLegend');
+                legendContainer.innerHTML = '';
+                
+                const total = data.reduce((a, b) => a + b, 0);
+                
+                labels.forEach((label, index) => {
+                    const percentage = ((data[index] / total) * 100).toFixed(1);
+                    const legendItem = document.createElement('div');
+                    legendItem.className = 'flex items-center mb-1';
+                    legendItem.innerHTML = `
+                        <div class="w-3 h-3 rounded-full mr-2" style="background-color: ${colors[index % colors.length]}"></div>
+                        <span class="text-gray-700">${label} (${percentage}%)</span>
+                    `;
+                    legendContainer.appendChild(legendItem);
+                });
+            }
+
+            // Calculate price average based on formula
+            function calculatePriceAverage(asset) {
+                const totalCost = asset.valorCompra * asset.quantidade;
+                const netCost = totalCost - asset.derivativos - asset.proventos;
+                return netCost / asset.quantidade;
+            }
+            
+            // Calculate profit/loss for an asset
+            function calculateProfitLoss(asset) {
+                const precoMedio = calculatePriceAverage(asset);
+                const profitLoss = asset.precoAtual - precoMedio;
+                const profitLossPercentage = (profitLoss / precoMedio) * 100;
+                
+                return {
+                    value: profitLoss * asset.quantidade,
+                    percentage: profitLossPercentage
+                };
+            }
+
+            // Render assets table
+            function renderTable() {
+                const tableBody = document.getElementById('assetTableBody');
+                tableBody.innerHTML = '';
+                
+                assets.forEach((asset, index) => {
+                    const row = document.createElement('tr');
+                    row.className = index % 2 === 0 ? 'bg-white' : 'bg-gray-50';
+                    
+                    const precoMedio = calculatePriceAverage(asset);
+                    const totalValue = asset.quantidade * asset.precoAtual;
+                    const profitLoss = calculateProfitLoss(asset);
+                    
+                    const profitLossClass = profitLoss.percentage >= 0 ? 'text-green-600' : 'text-red-600';
+                    const profitLossSign = profitLoss.percentage >= 0 ? '+' : '';
+                    
+                    row.innerHTML = `
+                        <td class="px-4 py-3 border-t">${asset.codigo}</td>
+                        <td class="px-4 py-3 border-t">${asset.empresa}</td>
+                        <td class="px-4 py-3 border-t text-right">${asset.quantidade}</td>
+                        <td class="px-4 py-3 border-t text-right">R$ ${asset.valorCompra.toFixed(2)}</td>
+                        <td class="px-4 py-3 border-t text-right">R$ ${asset.precoAtual.toFixed(2)}</td>
+                        <td class="px-4 py-3 border-t text-right">R$ ${asset.derivativos.toFixed(2)}</td>
+                        <td class="px-4 py-3 border-t text-right">R$ ${asset.proventos.toFixed(2)}</td>
+                        <td class="px-4 py-3 border-t text-right">R$ ${precoMedio.toFixed(2)}</td>
+                        <td class="px-4 py-3 border-t text-right">R$ ${totalValue.toFixed(2)}</td>
+                        <td class="px-4 py-3 border-t text-right ${profitLossClass} font-medium">
+                            R$ ${profitLoss.value.toFixed(2)}
+                            <span class="block text-xs">${profitLossSign}${profitLoss.percentage.toFixed(2)}%</span>
+                        </td>
+                        <td class="px-4 py-3 border-t text-center">
+                            <div class="flex justify-center space-x-2">
+                                <button class="edit-btn p-1 rounded-full hover:bg-gray-100" data-index="${index}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                </button>
+                                <button class="delete-btn p-1 rounded-full hover:bg-gray-100" data-index="${index}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+                                <button class="update-price-btn p-1 rounded-full hover:bg-gray-100" data-index="${index}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+                
+                updateSummary();
+                updatePortfolioChart();
+                updateSectorChart();
+                updateAnalysis();
+                
+                // Add event listeners to buttons
+                document.querySelectorAll('.edit-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const index = parseInt(this.getAttribute('data-index'));
+                        openEditModal(index);
+                    });
+                });
+                
+                document.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const index = parseInt(this.getAttribute('data-index'));
+                        if (confirm(`Tem certeza que deseja excluir ${assets[index].codigo}?`)) {
+                            assets.splice(index, 1);
+                            saveToLocalStorage();
+                            renderTable();
                         }
                     });
-                } catch (error) {
-                    console.error("Error reading file:", error);
-                    showNotification('Erro ao ler o arquivo.', 'error');
-                }
-            };
-            
-            reader.onerror = function() {
-                showNotification('Erro ao ler o arquivo.', 'error');
-            };
-            
-            // Read the file as text
-            reader.readAsText(file);
-            
-            // Reset file input
-            event.target.value = '';
-        }
-        
-        // Process CSV data
-        function processCSVData(data) {
-            investments = [];
-            
-            // Take up to 6 items from the CSV
-            const itemCount = Math.min(data.length, 6);
-            
-            for (let i = 0; i < itemCount; i++) {
-                const item = data[i];
+                });
                 
-                // Try to get values from different possible column names
-                const name = item.Item || item.Nome || item.name || item.item || `Item ${i+1}`;
-                let cost = 0;
-                let profitPercent = 0;
-                
-                // Try to parse cost from different possible column names
-                if (item.Custo !== undefined) cost = parseCurrency(item.Custo);
-                else if (item.Cost !== undefined) cost = parseCurrency(item.Cost);
-                else if (item.custo !== undefined) cost = parseCurrency(item.custo);
-                else if (item.cost !== undefined) cost = parseCurrency(item.cost);
-                else if (item.Valor !== undefined) cost = parseCurrency(item.Valor);
-                else if (item.valor !== undefined) cost = parseCurrency(item.valor);
-                
-                // Try to parse profit percentage from different possible column names
-                if (item.LucroPercent !== undefined) profitPercent = parseFloat(item.LucroPercent);
-                else if (item.Lucro !== undefined) profitPercent = parseFloat(item.Lucro);
-                else if (item.lucro !== undefined) profitPercent = parseFloat(item.lucro);
-                else if (item.ProfitPercent !== undefined) profitPercent = parseFloat(item.ProfitPercent);
-                else if (item.Profit !== undefined) profitPercent = parseFloat(item.Profit);
-                else if (item.profit !== undefined) profitPercent = parseFloat(item.profit);
-                
-                investments.push({
-                    name: name,
-                    cost: cost || 0,
-                    profitPercent: profitPercent || 0
+                document.querySelectorAll('.update-price-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const index = parseInt(this.getAttribute('data-index'));
+                        updateStockPrice(index);
+                    });
                 });
             }
+
+            // Update portfolio summary
+            function updateSummary() {
+                const totalValueEl = document.getElementById('totalValue');
+                const profitLossEl = document.getElementById('profitLoss');
+                const profitPercentageEl = document.getElementById('profitPercentage');
+                
+                let totalInvestment = 0;
+                let totalCurrentValue = 0;
+                
+                assets.forEach(asset => {
+                    const investmentValue = asset.quantidade * calculatePriceAverage(asset);
+                    const currentValue = asset.quantidade * asset.precoAtual;
+                    
+                    totalInvestment += investmentValue;
+                    totalCurrentValue += currentValue;
+                });
+                
+                const profitLoss = totalCurrentValue - totalInvestment;
+                const profitPercentage = totalInvestment > 0 ? (profitLoss / totalInvestment) * 100 : 0;
+                
+                totalValueEl.textContent = `R$ ${totalCurrentValue.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                profitLossEl.textContent = `R$ ${profitLoss.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                profitLossEl.className = profitLoss >= 0 ? 'text-2xl font-bold' : 'text-2xl font-bold text-red-500';
+                profitPercentageEl.textContent = `${profitPercentage.toFixed(2)}%`;
+                profitPercentageEl.className = profitPercentage >= 0 ? 'text-2xl font-bold' : 'text-2xl font-bold text-red-500';
+            }
             
-            // Render the table
-            renderTable();
-            updateSummary();
-            updateChart();
-        }
-        
-        // Load CSV data from remote URL
-        function importCSVData() {
-            const csvUrl = "https://tekinf2025.github.io/investimentos/investimentos-csv.csv";
-            
-            // Show loading notification
-            showNotification('Carregando dados do CSV remoto...', 'info');
-            
-            // Use PapaParse to fetch and parse the CSV
-            Papa.parse(csvUrl, {
-                download: true,
-                header: true,
-                skipEmptyLines: true,
-                complete: function(results) {
-                    if (results.data && results.data.length > 0) {
-                        processCSVData(results.data);
-                        showNotification('Dados importados com sucesso!', 'success');
-                    } else {
-                        showNotification('Erro ao carregar dados. Formato inválido ou vazio.', 'error');
+            // Update portfolio analysis
+            function updateAnalysis() {
+                if (assets.length === 0) return;
+                
+                // Find best and worst performing assets
+                let bestAsset = { profitPercentage: -Infinity };
+                let worstAsset = { profitPercentage: Infinity };
+                
+                assets.forEach(asset => {
+                    const profitLoss = calculateProfitLoss(asset);
+                    
+                    if (profitLoss.percentage > bestAsset.profitPercentage) {
+                        bestAsset = {
+                            codigo: asset.codigo,
+                            profitPercentage: profitLoss.percentage
+                        };
                     }
-                },
-                error: function(error) {
-                    console.error("Error loading CSV:", error);
-                    showNotification('Erro ao carregar o arquivo CSV remoto.', 'error');
-                }
-            });
-        }
-        
-        // Render the investment table
-        function renderTable() {
-            const tableBody = document.getElementById('investmentTable');
-            tableBody.innerHTML = '';
-            
-            if (investments.length === 0) {
-                const emptyRow = document.createElement('tr');
-                emptyRow.innerHTML = `
-                    <td colspan="5" class="px-6 py-6 text-center text-gray-500">
-                        <div class="flex flex-col items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-                            </svg>
-                            <p class="font-medium">Nenhum item encontrado</p>
-                            <p class="text-sm mt-1">Importe dados ou adicione itens manualmente</p>
-                        </div>
-                    </td>
-                `;
-                tableBody.appendChild(emptyRow);
-                return;
-            }
-            
-            investments.forEach((item, index) => {
-                const totalValue = item.cost * (1 + item.profitPercent / 100);
-                
-                const row = document.createElement('tr');
-                row.className = "table-row-hover transition-colors";
-                
-                row.innerHTML = `
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <input type="text" value="${item.name}" class="border-0 bg-transparent w-full focus:ring-2 focus:ring-primary-500 rounded transition-all" 
-                            onchange="updateItemName(${index}, this.value)">
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <input type="text" value="${formatCurrency(item.cost)}" class="border-0 bg-transparent w-full focus:ring-2 focus:ring-primary-500 rounded transition-all" 
-                            onchange="updateItemCost(${index}, this.value)" onblur="formatInputCurrency(this, ${index})">
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="relative">
-                            <input type="number" value="${item.profitPercent}" class="border-0 bg-transparent w-full focus:ring-2 focus:ring-primary-500 rounded transition-all" 
-                                onchange="updateItemProfit(${index}, this.value)" step="0.01">
-                        </div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
-                        ${formatCurrency(totalValue)}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right">
-                        <button onclick="removeItem(${index})" class="text-red-500 hover:text-red-700 transition-colors p-1 rounded-full hover:bg-red-50">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                            </svg>
-                        </button>
-                    </td>
-                `;
-                
-                tableBody.appendChild(row);
-            });
-        }
-        
-        // Format input as currency
-        function formatInputCurrency(input, index) {
-            const value = parseCurrency(input.value);
-            input.value = formatCurrency(value);
-            investments[index].cost = value;
-            updateSummary();
-            updateChart();
-        }
-        
-        // Update item name
-        function updateItemName(index, value) {
-            investments[index].name = value;
-            updateSummary();
-            updateChart();
-        }
-        
-        // Update item cost
-        function updateItemCost(index, value) {
-            investments[index].cost = parseCurrency(value);
-            updateSummary();
-            updateChart();
-        }
-        
-        // Update item profit percentage
-        function updateItemProfit(index, value) {
-            investments[index].profitPercent = parseFloat(value) || 0;
-            renderTable();
-            updateSummary();
-            updateChart();
-        }
-        
-        // Remove an item
-        function removeItem(index) {
-            investments.splice(index, 1);
-            renderTable();
-            updateSummary();
-            updateChart();
-            showNotification('Item removido com sucesso!', 'info');
-        }
-        
-        // Add a new item
-        function addNewItem() {
-            investments.push({
-                name: `Item ${investments.length + 1}`,
-                cost: 0,
-                profitPercent: 0
-            });
-            
-            renderTable();
-            updateSummary();
-            updateChart();
-            showNotification('Novo item adicionado!', 'success');
-        }
-        
-        // Update summary calculations
-        function updateSummary() {
-            // Calculate totals
-            const totalCost = investments.reduce((sum, item) => sum + item.cost, 0);
-            const totalWithProfit = investments.reduce((sum, item) => sum + (item.cost * (1 + item.profitPercent / 100)), 0);
-            const totalProfit = totalWithProfit - totalCost;
-            
-            // Update summary display with animation
-            animateCounter('totalCost', totalCost);
-            animateCounter('totalWithProfit', totalWithProfit);
-            animateCounter('totalProfit', totalProfit);
-            
-            // Update financial analysis
-            updateFinancialAnalysis(totalCost, totalWithProfit, totalProfit);
-        }
-        
-        // Animate counter for better UX
-        function animateCounter(elementId, targetValue) {
-            const element = document.getElementById(elementId);
-            const startValue = parseCurrency(element.textContent);
-            const duration = 500; // ms
-            const startTime = performance.now();
-            
-            function updateCounter(currentTime) {
-                const elapsedTime = currentTime - startTime;
-                const progress = Math.min(elapsedTime / duration, 1);
-                
-                // Easing function for smoother animation
-                const easeOutQuad = progress * (2 - progress);
-                
-                const currentValue = startValue + (targetValue - startValue) * easeOutQuad;
-                element.textContent = formatCurrency(currentValue);
-                
-                if (progress < 1) {
-                    requestAnimationFrame(updateCounter);
-                } else {
-                    element.textContent = formatCurrency(targetValue);
-                }
-            }
-            
-            requestAnimationFrame(updateCounter);
-        }
-        
-        // Update financial analysis text
-        function updateFinancialAnalysis(totalCost, totalWithProfit, totalProfit) {
-            const analysisElement = document.getElementById('financialAnalysis');
-            const profitMargin = totalCost > 0 ? (totalProfit / totalCost) * 100 : 0;
-            
-            let analysisText = '';
-            
-            if (totalCost === 0) {
-                analysisText = `
-                    <div class="flex items-center p-4 bg-blue-50 rounded-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <p>Adicione itens para gerar uma análise financeira detalhada.</p>
-                    </div>
-                `;
-            } else {
-                let statusIcon, statusColor, statusMessage;
-                
-                if (profitMargin < 10) {
-                    statusIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                    </svg>`;
-                    statusColor = 'bg-red-50 border-red-200';
-                    statusMessage = 'Alerta: Margem de lucro abaixo de 10%. Considere revisar os custos ou aumentar as margens de lucro.';
-                } else if (profitMargin >= 10 && profitMargin < 20) {
-                    statusIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                    </svg>`;
-                    statusColor = 'bg-yellow-50 border-yellow-200';
-                    statusMessage = 'Margem de lucro aceitável, mas há espaço para melhorias.';
-                } else {
-                    statusIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>`;
-                    statusColor = 'bg-green-50 border-green-200';
-                    statusMessage = 'Excelente margem de lucro! O negócio está performando bem.';
-                }
-                
-                analysisText = `
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div class="p-4 bg-blue-50 rounded-lg flex flex-col">
-                            <span class="text-xs text-blue-500 font-semibold uppercase mb-1">Investido Total</span>
-                            <span class="text-2xl font-bold text-gray-800">${formatCurrency(totalCost)}</span>
-                        </div>
-                        <div class="p-4 bg-green-50 rounded-lg flex flex-col">
-                            <span class="text-xs text-green-500 font-semibold uppercase mb-1">Receita Total</span>
-                            <span class="text-2xl font-bold text-gray-800">${formatCurrency(totalWithProfit)}</span>
-                        </div>
-                        <div class="p-4 bg-purple-50 rounded-lg flex flex-col">
-                            <span class="text-xs text-purple-500 font-semibold uppercase mb-1">Lucro Total</span>
-                            <span class="text-2xl font-bold text-gray-800">${formatCurrency(totalProfit)}</span>
-                        </div>
-                        <div class="p-4 bg-indigo-50 rounded-lg flex flex-col">
-                            <span class="text-xs text-indigo-500 font-semibold uppercase mb-1">Margem de Lucro</span>
-                            <span class="text-2xl font-bold text-gray-800">${profitMargin.toFixed(2)}%</span>
-                        </div>
-                    </div>
                     
-                    <div class="p-4 ${statusColor} border rounded-lg flex items-start">
-                        ${statusIcon}
-                        <p class="font-medium">${statusMessage}</p>
-                    </div>
-                `;
-            }
-            
-            analysisElement.innerHTML = analysisText;
-        }
-        
-        // Update chart visualization
-        function updateChart() {
-            // Prepare data for chart - now using total values instead of just costs
-            const labels = investments.map(item => item.name);
-            const totalValues = investments.map(item => item.cost * (1 + item.profitPercent / 100));
-            
-            // Update chart data
-            chart.data.labels = labels;
-            chart.data.datasets[0].data = totalValues;
-            
-            // Update chart with animation
-            chart.update('easeOutQuart');
-        }
-        
-        // Calculate installment plans
-        function calculateInstallments() {
-            const amount = parseCurrency(document.getElementById('installmentAmount').value) || 0;
-            const interestRate = parseFloat(document.getElementById('interestRate').value) || 4;
-            const tableBody = document.getElementById('installmentTable');
-            
-            tableBody.innerHTML = '';
-            
-            if (amount <= 0) {
-                showNotification('Por favor, insira um valor válido para calcular as parcelas.', 'error');
-                return;
-            }
-            
-            // Calculate installments for 1 to 12 months
-            for (let i = 1; i <= 12; i++) {
-                // Calculate compound interest
-                const totalAmount = amount * Math.pow(1 + (interestRate / 100), i);
-                const installmentAmount = totalAmount / i;
-                const totalInterest = totalAmount - amount;
-                
-                const row = document.createElement('tr');
-                row.className = "table-row-hover transition-colors";
-                
-                // Add animation delay for staggered appearance
-                row.style.animation = `fadeIn 0.3s ease-in-out ${i * 0.05}s both`;
-                
-                row.innerHTML = `
-                    <td class="px-6 py-4 whitespace-nowrap font-medium">
-                        <div class="flex items-center">
-                            <span class="bg-primary-100 text-primary-800 text-xs font-semibold px-2.5 py-1 rounded-full mr-2">${i}x</span>
-                            ${i === 1 ? '<span class="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">À vista</span>' : ''}
-                        </div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">${formatCurrency(installmentAmount)}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="${totalInterest > 0 ? 'text-red-600' : 'text-gray-600'}">${formatCurrency(totalInterest)}</span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap font-medium">${formatCurrency(totalAmount)}</td>
-                `;
-                
-                tableBody.appendChild(row);
-            }
-            
-            showNotification('Parcelas calculadas com sucesso!', 'success');
-        }
-        
-        // Export data function
-        function exportData() {
-            if (investments.length === 0) {
-                showNotification('Não há dados para exportar.', 'error');
-                return;
-            }
-            
-            try {
-                // Create CSV content
-                let csvContent = "Item,Custo,LucroPercent\n";
-                
-                investments.forEach(item => {
-                    // Format values properly for CSV
-                    const name = item.name.includes(',') ? `"${item.name}"` : item.name;
-                    const cost = item.cost.toString().replace('.', ',');
-                    const profit = item.profitPercent.toString().replace('.', ',');
-                    
-                    csvContent += `${name},${cost},${profit}\n`;
+                    if (profitLoss.percentage < worstAsset.profitPercentage) {
+                        worstAsset = {
+                            codigo: asset.codigo,
+                            profitPercentage: profitLoss.percentage
+                        };
+                    }
                 });
                 
-                // Create download link using Blob
-                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                // Update best/worst asset display
+                document.getElementById('bestAsset').textContent = 
+                    `${bestAsset.codigo} (+${bestAsset.profitPercentage.toFixed(2)}%)`;
+                document.getElementById('worstAsset').textContent = 
+                    `${worstAsset.codigo} (${worstAsset.profitPercentage.toFixed(2)}%)`;
                 
-                // Create a temporary anchor element
-                const link = document.createElement('a');
+                // Calculate diversification score
+                const uniqueSectors = new Set(assets.map(asset => asset.setor || 'Outros')).size;
+                const maxSectors = 10; // Maximum number of sectors in our dropdown
+                const diversificationScore = Math.min(100, (uniqueSectors / maxSectors) * 100);
                 
-                // Create a URL for the blob
-                const url = window.URL.createObjectURL(blob);
+                document.getElementById('diversificationScore').textContent = `${diversificationScore.toFixed(0)}%`;
+                document.getElementById('diversificationBar').style.width = `${diversificationScore}%`;
                 
-                // Set link properties
-                link.href = url;
-                link.download = 'tekinformatica_investimentos.csv';
-                link.style.display = 'none';
+                // Calculate volatility (simulated)
+                const volatility = Math.min(100, Math.max(10, Math.random() * 70));
+                document.getElementById('volatilityScore').textContent = `${volatility.toFixed(0)}%`;
+                document.getElementById('volatilityBar').style.width = `${volatility}%`;
                 
-                // Add to document, click and remove
-                document.body.appendChild(link);
-                link.click();
+                // Update risk gauge
+                const riskScore = (volatility * 0.7 + (100 - diversificationScore) * 0.3);
+                const riskLevel = document.getElementById('riskLevel');
+                const riskGaugeFill = document.getElementById('riskGaugeFill');
+                const riskGaugeNeedle = document.getElementById('riskGaugeNeedle');
                 
-                // Clean up
-                setTimeout(() => {
+                // Set risk level text
+                let riskText = 'Baixo';
+                let riskColor = '#10b981'; // green
+                
+                if (riskScore > 30 && riskScore <= 60) {
+                    riskText = 'Moderado';
+                    riskColor = '#f59e0b'; // amber
+                } else if (riskScore > 60) {
+                    riskText = 'Alto';
+                    riskColor = '#ef4444'; // red
+                }
+                
+                riskLevel.textContent = riskText;
+                
+                // Update gauge
+                const rotationDegrees = (riskScore / 100) * 180;
+                riskGaugeNeedle.style.transform = `translateX(-50%) rotate(${rotationDegrees}deg)`;
+                riskGaugeFill.style.height = '60px';
+                riskGaugeFill.style.backgroundColor = riskColor;
+                riskGaugeFill.style.transform = `rotate(${rotationDegrees}deg)`;
+                
+                // Update recommendations based on analysis
+                updateRecommendations(bestAsset, worstAsset, diversificationScore, volatility);
+            }
+            
+            // Update recommendations
+            function updateRecommendations(bestAsset, worstAsset, diversificationScore, volatility) {
+                const recommendationsContainer = document.getElementById('recommendationsContainer');
+                recommendationsContainer.innerHTML = '';
+                
+                // Diversification recommendation
+                if (diversificationScore < 40) {
+                    const diversificationRec = document.createElement('div');
+                    diversificationRec.className = 'analysis-card border-blue-500 bg-blue-50 p-3 rounded';
+                    diversificationRec.innerHTML = `
+                        <h4 class="font-medium text-blue-700">Diversificação</h4>
+                        <p class="text-sm text-gray-700">Sua carteira está pouco diversificada. Considere adicionar ativos de outros setores para reduzir o risco.</p>
+                    `;
+                    recommendationsContainer.appendChild(diversificationRec);
+                }
+                
+                // Best performer recommendation
+                if (bestAsset.profitPercentage > 10) {
+                    const bestAssetRec = document.createElement('div');
+                    bestAssetRec.className = 'analysis-card border-green-500 bg-green-50 p-3 rounded';
+                    bestAssetRec.innerHTML = `
+                        <h4 class="font-medium text-green-700">Oportunidade</h4>
+                        <p class="text-sm text-gray-700">${bestAsset.codigo} está com excelente desempenho (+${bestAsset.profitPercentage.toFixed(2)}%). Considere realizar parte dos lucros.</p>
+                    `;
+                    recommendationsContainer.appendChild(bestAssetRec);
+                }
+                
+                // Worst performer recommendation
+                if (worstAsset.profitPercentage < -10) {
+                    const worstAssetRec = document.createElement('div');
+                    worstAssetRec.className = 'analysis-card border-amber-500 bg-amber-50 p-3 rounded';
+                    worstAssetRec.innerHTML = `
+                        <h4 class="font-medium text-amber-700">Atenção</h4>
+                        <p class="text-sm text-gray-700">${worstAsset.codigo} está com desempenho abaixo do esperado (${worstAsset.profitPercentage.toFixed(2)}%). Reavalie esta posição.</p>
+                    `;
+                    recommendationsContainer.appendChild(worstAssetRec);
+                }
+                
+                // Volatility recommendation
+                if (volatility > 60) {
+                    const volatilityRec = document.createElement('div');
+                    volatilityRec.className = 'analysis-card border-purple-500 bg-purple-50 p-3 rounded';
+                    volatilityRec.innerHTML = `
+                        <h4 class="font-medium text-purple-700">Volatilidade</h4>
+                        <p class="text-sm text-gray-700">Sua carteira apresenta alta volatilidade. Considere adicionar ativos mais estáveis para equilibrar o risco.</p>
+                    `;
+                    recommendationsContainer.appendChild(volatilityRec);
+                }
+                
+                // If no recommendations, add a default one
+                if (recommendationsContainer.children.length === 0) {
+                    const defaultRec = document.createElement('div');
+                    defaultRec.className = 'analysis-card border-green-500 bg-green-50 p-3 rounded';
+                    defaultRec.innerHTML = `
+                        <h4 class="font-medium text-green-700">Carteira Equilibrada</h4>
+                        <p class="text-sm text-gray-700">Sua carteira parece bem equilibrada. Continue monitorando o desempenho dos ativos regularmente.</p>
+                    `;
+                    recommendationsContainer.appendChild(defaultRec);
+                }
+            }
+
+            // Open modal for adding/editing assets
+            function openModal(isEditing = false, index = -1) {
+                const modal = document.getElementById('assetModal');
+                const modalTitle = document.getElementById('modalTitle');
+                const form = document.getElementById('assetForm');
+                
+                modalTitle.textContent = isEditing ? 'Editar Ativo' : 'Adicionar Ativo';
+                editingIndex = index;
+                
+                if (isEditing && index >= 0) {
+                    const asset = assets[index];
+                    document.getElementById('assetId').value = index;
+                    document.getElementById('codigo').value = asset.codigo;
+                    document.getElementById('empresa').value = asset.empresa;
+                    document.getElementById('setor').value = asset.setor || 'Outros';
+                    document.getElementById('quantidade').value = asset.quantidade;
+                    document.getElementById('valorCompra').value = asset.valorCompra;
+                    document.getElementById('precoAtual').value = asset.precoAtual;
+                    document.getElementById('derivativos').value = asset.derivativos;
+                    document.getElementById('proventos').value = asset.proventos;
+                } else {
+                    form.reset();
+                    document.getElementById('assetId').value = '';
+                }
+                
+                modal.classList.remove('hidden');
+            }
+
+            // Open edit modal
+            function openEditModal(index) {
+                openModal(true, index);
+            }
+
+            // Close modal
+            function closeModal() {
+                const modal = document.getElementById('assetModal');
+                modal.classList.add('hidden');
+            }
+            
+            // Open remote URL modal
+            function openRemoteUrlModal() {
+                const modal = document.getElementById('remoteUrlModal');
+                modal.classList.remove('hidden');
+            }
+            
+            // Close remote URL modal
+            function closeRemoteUrlModal() {
+                const modal = document.getElementById('remoteUrlModal');
+                modal.classList.add('hidden');
+            }
+
+            // Save assets to local storage
+            function saveToLocalStorage() {
+                try {
+                    localStorage.setItem('investmentAssets', JSON.stringify(assets));
+                } catch (e) {
+                    console.error("Error saving to local storage:", e);
+                    showToast("Erro ao salvar dados localmente. Seu navegador pode estar com armazenamento cheio ou com cookies desativados.", "error");
+                }
+            }
+
+            // Load assets from local storage
+            function loadFromLocalStorage() {
+                try {
+                    const savedAssets = localStorage.getItem('investmentAssets');
+                    if (savedAssets) {
+                        assets = JSON.parse(savedAssets);
+                        renderTable();
+                    }
+                } catch (e) {
+                    console.error("Error loading assets from local storage:", e);
+                    assets = [];
+                    renderTable();
+                }
+            }
+
+            // Export assets to CSV
+            function exportToCSV() {
+                if (assets.length === 0) {
+                    showToast('Não há ativos para exportar.', 'error');
+                    return;
+                }
+                
+                try {
+                    // Define headers and prepare CSV content
+                    const headers = ['codigo', 'empresa', 'setor', 'quantidade', 'valorCompra', 'precoAtual', 'derivativos', 'proventos'];
+                    
+                    // Create CSV content with proper escaping for text fields
+                    let csvContent = headers.join(',') + '\r\n';
+                    
+                    assets.forEach(asset => {
+                        const row = headers.map(header => {
+                            const value = asset[header];
+                            
+                            // Handle text fields that might contain commas or quotes
+                            if (typeof value === 'string') {
+                                // Escape quotes by doubling them and wrap in quotes
+                                return `"${value.replace(/"/g, '""')}"`;
+                            }
+                            
+                            // For numbers, just convert to string
+                            return value !== undefined ? String(value) : '';
+                        });
+                        
+                        csvContent += row.join(',') + '\r\n';
+                    });
+                    
+                    // Create a Blob with the CSV content
+                    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                    
+                    // Create a download link and trigger it
+                    const link = document.createElement('a');
+                    const url = URL.createObjectURL(blob);
+                    
+                    link.setAttribute('href', url);
+                    link.setAttribute('download', 'investimentos.csv');
+                    link.style.visibility = 'hidden';
+                    
+                    document.body.appendChild(link);
+                    link.click();
                     document.body.removeChild(link);
-                    window.URL.revokeObjectURL(url);
+                    
+                    // Clean up the URL object
+                    setTimeout(() => {
+                        URL.revokeObjectURL(url);
+                    }, 100);
+                    
+                    showToast('Arquivo CSV exportado com sucesso!', 'success');
+                } catch (error) {
+                    console.error('Erro ao exportar CSV:', error);
+                    showToast('Ocorreu um erro ao exportar o arquivo CSV. Por favor, tente novamente.', 'error');
+                }
+            }
+
+            // Process CSV data
+            function processCSVData(results) {
+                if (results.data && results.data.length > 0) {
+                    try {
+                        // Filter out empty rows
+                        const validData = results.data.filter(item => 
+                            item.codigo && item.empresa && 
+                            !isNaN(parseFloat(item.quantidade)) && 
+                            !isNaN(parseFloat(item.valorCompra)) && 
+                            !isNaN(parseFloat(item.precoAtual))
+                        );
+                        
+                        if (validData.length === 0) {
+                            showToast('Nenhum dado válido encontrado no arquivo CSV.', 'error');
+                            return;
+                        }
+                        
+                        // Convert string values to numbers
+                        assets = validData.map(item => ({
+                            codigo: item.codigo,
+                            empresa: item.empresa,
+                            setor: item.setor || 'Outros',
+                            quantidade: parseInt(item.quantidade) || 0,
+                            valorCompra: parseFloat(item.valorCompra) || 0,
+                            precoAtual: parseFloat(item.precoAtual) || 0,
+                            derivativos: parseFloat(item.derivativos || 0) || 0,
+                            proventos: parseFloat(item.proventos || 0) || 0
+                        }));
+                        
+                        saveToLocalStorage();
+                        renderTable();
+                        showToast(`Dados importados com sucesso! ${validData.length} ativos carregados.`, 'success');
+                    } catch (error) {
+                        console.error("Erro ao processar dados do CSV:", error);
+                        showToast('Erro ao processar os dados do arquivo CSV. Verifique o formato do arquivo.', 'error');
+                    }
+                } else {
+                    showToast('Erro ao importar o arquivo CSV. Nenhum dado encontrado.', 'error');
+                }
+            }
+
+            // Import assets from local CSV file
+            function importFromLocalCSV(file) {
+                Papa.parse(file, {
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: processCSVData,
+                    error: function(error) {
+                        console.error("CSV parsing error:", error);
+                        showToast('Erro ao processar o arquivo CSV. Verifique se o formato está correto.', 'error');
+                    }
+                });
+            }
+            
+            // Import assets from remote CSV URL
+            function importFromRemoteCSV(url) {
+                showToast('Carregando dados remotos...', 'info');
+                
+                // Use fetch API to get the remote CSV file
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Erro de rede: ${response.status}`);
+                        }
+                        return response.text();
+                    })
+                    .then(csvText => {
+                        // Parse the CSV text
+                        Papa.parse(csvText, {
+                            header: true,
+                            skipEmptyLines: true,
+                            complete: processCSVData,
+                            error: function(error) {
+                                console.error("CSV parsing error:", error);
+                                showToast('Erro ao processar o arquivo CSV remoto. Verifique se o formato está correto.', 'error');
+                            }
+                        });
+                    })
+                    .catch(error => {
+                        console.error("Error fetching remote CSV:", error);
+                        showToast(`Erro ao carregar o arquivo CSV remoto: ${error.message}`, 'error');
+                    });
+            }
+
+            // Simulate updating stock price from Google Finance
+            function updateStockPrice(index) {
+                const asset = assets[index];
+                
+                // Show loading indicator
+                const originalText = document.querySelector(`.update-price-btn[data-index="${index}"] svg`).outerHTML;
+                document.querySelector(`.update-price-btn[data-index="${index}"]`).innerHTML = `
+                    <svg class="animate-spin h-5 w-5 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                `;
+                
+                // Simulate API call with timeout
+                setTimeout(() => {
+                    // Generate a random price change between -5% and +5%
+                    const changePercent = (Math.random() * 10 - 5) / 100;
+                    const newPrice = asset.precoAtual * (1 + changePercent);
+                    
+                    assets[index].precoAtual = parseFloat(newPrice.toFixed(2));
+                    saveToLocalStorage();
+                    renderTable();
+                    
+                    // Restore button
+                    document.querySelector(`.update-price-btn[data-index="${index}"]`).innerHTML = originalText;
+                    
+                    // Show notification
+                    showToast(`Preço de ${asset.codigo} atualizado para R$ ${newPrice.toFixed(2)}`, 'success');
+                }, 1500);
+            }
+            
+            // Show toast notification
+            function showToast(message, type = 'info') {
+                const toast = document.getElementById('toast');
+                const toastMessage = document.getElementById('toastMessage');
+                
+                // Set message and type
+                toastMessage.textContent = message;
+                toast.className = 'toast';
+                toast.classList.add(`toast-${type}`);
+                
+                // Show toast
+                setTimeout(() => {
+                    toast.classList.add('show');
                 }, 100);
                 
-                // Show success notification
-                showNotification('Dados exportados com sucesso!', 'success');
-            } catch (error) {
-                console.error("Error exporting data:", error);
-                showNotification('Erro ao exportar os dados.', 'error');
-            }
-        }
-        
-        // Show notification
-        function showNotification(message, type = 'info') {
-            const container = document.getElementById('notificationContainer');
-            
-            // Create notification element
-            const notification = document.createElement('div');
-            
-            // Set class based on notification type
-            let bgColor, icon;
-            switch(type) {
-                case 'success':
-                    bgColor = 'bg-green-500';
-                    icon = `<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>`;
-                    break;
-                case 'error':
-                    bgColor = 'bg-red-500';
-                    icon = `<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>`;
-                    break;
-                default:
-                    bgColor = 'bg-blue-500';
-                    icon = `<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>`;
-            }
-            
-            notification.className = `flex items-center px-4 py-3 rounded-lg shadow-lg ${bgColor} text-white mb-3 animate__animated animate__fadeInRight`;
-            notification.innerHTML = `
-                ${icon}
-                <span>${message}</span>
-                <button class="ml-auto focus:outline-none" onclick="this.parentElement.remove()">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            `;
-            
-            // Add to container
-            container.appendChild(notification);
-            
-            // Remove after 5 seconds
-            setTimeout(() => {
-                notification.classList.add('animate__fadeOutRight');
+                // Hide toast after 3 seconds
                 setTimeout(() => {
-                    if (notification.parentElement) {
-                        notification.remove();
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+            
+            // Toggle import dropdown
+            function toggleImportDropdown() {
+                const dropdown = document.getElementById('importDropdown');
+                dropdown.classList.toggle('hidden');
+            }
+            
+            // Close dropdown when clicking outside
+            window.addEventListener('click', function(e) {
+                const dropdown = document.getElementById('importDropdown');
+                const dropdownBtn = document.getElementById('importDropdownBtn');
+                
+                if (!dropdown.contains(e.target) && !dropdownBtn.contains(e.target)) {
+                    dropdown.classList.add('hidden');
+                }
+            });
+
+            // Event listeners
+            document.getElementById('addAssetBtn').addEventListener('click', () => openModal());
+            
+            document.getElementById('cancelBtn').addEventListener('click', closeModal);
+            
+            document.getElementById('importDropdownBtn').addEventListener('click', toggleImportDropdown);
+            
+            document.getElementById('importLocalBtn').addEventListener('click', function() {
+                document.getElementById('importDropdown').classList.add('hidden');
+                document.getElementById('csvFileInput').click();
+            });
+            
+            document.getElementById('importRemoteBtn').addEventListener('click', function() {
+                document.getElementById('importDropdown').classList.add('hidden');
+                openRemoteUrlModal();
+            });
+            
+            document.getElementById('cancelUrlBtn').addEventListener('click', closeRemoteUrlModal);
+            
+            document.getElementById('remoteUrlForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const url = document.getElementById('csvUrl').value.trim();
+                if (url) {
+                    importFromRemoteCSV(url);
+                    closeRemoteUrlModal();
+                } else {
+                    showToast('Por favor, insira uma URL válida.', 'error');
+                }
+            });
+            
+            document.getElementById('assetForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const assetData = {
+                    codigo: document.getElementById('codigo').value,
+                    empresa: document.getElementById('empresa').value,
+                    setor: document.getElementById('setor').value,
+                    quantidade: parseInt(document.getElementById('quantidade').value),
+                    valorCompra: parseFloat(document.getElementById('valorCompra').value),
+                    precoAtual: parseFloat(document.getElementById('precoAtual').value),
+                    derivativos: parseFloat(document.getElementById('derivativos').value || 0),
+                    proventos: parseFloat(document.getElementById('proventos').value || 0)
+                };
+                
+                if (editingIndex >= 0) {
+                    assets[editingIndex] = assetData;
+                    showToast(`Ativo ${assetData.codigo} atualizado com sucesso!`, 'success');
+                } else {
+                    assets.push(assetData);
+                    showToast(`Ativo ${assetData.codigo} adicionado com sucesso!`, 'success');
+                }
+                
+                saveToLocalStorage();
+                renderTable();
+                closeModal();
+            });
+            
+            document.getElementById('exportBtn').addEventListener('click', exportToCSV);
+            
+            document.getElementById('csvFileInput').addEventListener('change', function(e) {
+                if (e.target.files.length > 0) {
+                    importFromLocalCSV(e.target.files[0]);
+                    // Reset the input so the same file can be selected again
+                    this.value = '';
+                }
+            });
+
+            // Initialize the application
+            initCharts();
+            loadFromLocalStorage();
+            
+            // Add sample data if no data exists
+            if (assets.length === 0) {
+                assets = [
+                    {
+                        codigo: 'PETR4',
+                        empresa: 'Petrobras',
+                        setor: 'Petróleo e Gás',
+                        quantidade: 100,
+                        valorCompra: 28.50,
+                        precoAtual: 30.25,
+                        derivativos: 150.00,
+                        proventos: 200.00
+                    },
+                    {
+                        codigo: 'VALE3',
+                        empresa: 'Vale',
+                        setor: 'Mineração',
+                        quantidade: 50,
+                        valorCompra: 68.75,
+                        precoAtual: 72.30,
+                        derivativos: 75.00,
+                        proventos: 125.00
+                    },
+                    {
+                        codigo: 'ITUB4',
+                        empresa: 'Itaú Unibanco',
+                        setor: 'Financeiro',
+                        quantidade: 80,
+                        valorCompra: 32.40,
+                        precoAtual: 33.15,
+                        derivativos: 50.00,
+                        proventos: 180.00
+                    },
+                    {
+                        codigo: 'MGLU3',
+                        empresa: 'Magazine Luiza',
+                        setor: 'Varejo',
+                        quantidade: 200,
+                        valorCompra: 4.75,
+                        precoAtual: 4.25,
+                        derivativos: 0.00,
+                        proventos: 25.00
+                    },
+                    {
+                        codigo: 'WEGE3',
+                        empresa: 'WEG',
+                        setor: 'Energia',
+                        quantidade: 40,
+                        valorCompra: 36.20,
+                        precoAtual: 39.80,
+                        derivativos: 0.00,
+                        proventos: 45.00
                     }
-                }, 500);
-            }, 5000);
-        }
+                ];
+                saveToLocalStorage();
+                renderTable();
+            }
+        });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'94869b1d26c66d57',t:'MTc0ODY5NTkyMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9497634ab5679892',t:'MTc0ODg3MTg5MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
